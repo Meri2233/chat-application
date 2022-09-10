@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { ref, onValue } from 'firebase/database';
+import { ref, set,onValue } from 'firebase/database';
 import { database } from '../firebase-config';
 import { useState } from 'react';
 
@@ -19,7 +19,7 @@ export default function Chatbox({ user }) {
         addmessages(copy);
     });
 
-    let addNewChatMessage = async () => {
+    let addNewChatMessage = async (e) => {
         let data = new FormData(e.target);
         let messagedata = data.get('message');
         let message = {
@@ -29,7 +29,7 @@ export default function Chatbox({ user }) {
         }
         await set(ref(database, 'rooms/' + id + "/messages"), message);
     }
-    
+
     return (
         <div>
             <div className="messages">
