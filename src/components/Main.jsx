@@ -3,23 +3,23 @@ import Header from "./Header"
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { auth } from "../firebase-config"
-import { useState } from "react";
 import { ref, set } from "firebase/database";
 import { database } from "../firebase-config"
 import ChatterRoom from "./ChatterRoom";
 import Chatbox from "./Chatbox";
+import { useDispatch } from "react-redux";
+import { addUser } from "../slice/userSlice"
 
 let provider = new GoogleAuthProvider();
 
 function Main() {
     let navigate = useNavigate();
-    let [user, setUser] = useState(null);
+    let dispatch = useDispatch()
 
-    async function writeUserData(name, email, imageUrl) {
+    async function writeUserData(name, email) {
         await set(ref(database, 'users/' + "_" + email.replace(/\./g)), {
             username: name,
-            email: email,
-            profile_picture: imageUrl
+            email: email
         });
     }
 
@@ -31,10 +31,10 @@ function Main() {
                 userObj = {
                     name: user.displayName,
                     email: user.email,
-                    profilePicture: user.photoURL
+                    //profilePicture: user.photoURL
                 }
-                setUser(userObj);
-                writeUserData(userObj.name, userObj.email, userObj.profilePicture)
+                writeUserData(userObj.name, userObj.email)
+                dispatch(addUser(userObj));
                 navigate("/chatterroom", { replace: true });
 
             }).catch((err) => {
@@ -45,16 +45,15 @@ function Main() {
         signOut(auth)
             .then(() => console.log("Signout Successful"))
             .catch((err) => alert("ERROR OCCURED:", err.message));
-        setUser(null);
     }
 
     return (
         <div className="container">
-            <Header user={user} Logout={logoutFromGoogle} />
+            <Header Logout={logoutFromGoogle} />
             <Routes>
-                <Route path="/" element={<Body user={user} googleLogin={loginWithGoogle} />} />
-                <Route path="/chatterroom" element={<ChatterRoom user={user}/>} />
-                <Route path="/chat/:id" element = {<Chatbox user={user}/>}/>
+                <Route path="/" element={<Body googleLogin={loginWithGoogle} />} />
+                <Route path="/chatterroom" element={<ChatterRoom />} />
+                <Route path="/chat/:id" element={<Chatbox />} />
             </Routes>
         </div>
     )
