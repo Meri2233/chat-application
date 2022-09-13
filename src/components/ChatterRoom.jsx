@@ -30,7 +30,7 @@ function ChatterRoom() {
             }
             addRooms(copy);
         });
-    }, [])
+    }, [rooms])
 
     return (
         <div className="chatterroom">

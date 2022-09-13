@@ -17,10 +17,12 @@ function Main() {
     let dispatch = useDispatch()
 
     async function writeUserData(name, email) {
-        await set(ref(database, 'users/' + "_" + email.replace(/\./g)), {
+        let path = email.replace(/\./g,"");
+        console.log(path);
+        await set(ref(database, 'users/' + path), {
             username: name,
             email: email
-        });
+        })
     }
 
     let loginWithGoogle = async () => {

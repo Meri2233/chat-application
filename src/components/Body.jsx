@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom"
-import ChatterRoom from "./ChatterRoom"
 
 function Body(props) {
     return (

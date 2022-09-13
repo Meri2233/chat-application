@@ -38,7 +38,6 @@ export default function Chatbox() {
     return (
         <div className='chatterroom'>
             <div className="rooms">
-                <h3></h3>
                 <div className="messages">
                     {messages.map((el, index) => {
                         if (el.sender === user.email) {
@@ -63,7 +62,7 @@ export default function Chatbox() {
                     }}>
                         <input type="text" name='message' className='chatroom' placeholder='Type your message here' />
                         <button className='button'>Send</button>
-                    </form>  
+                    </form>
                 </div>
             </div>
         </div>
