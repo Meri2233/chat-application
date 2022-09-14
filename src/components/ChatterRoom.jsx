@@ -3,10 +3,12 @@ import { ref, set, onValue } from "firebase/database";
 import { database } from "../firebase-config";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addRoom } from "../slice/roomSlice"
 
 function ChatterRoom() {
-    let [rooms, addRooms] = useState([]);
+    let dispatch = useDispatch();
+    let rooms = useSelector(state => state.room.room)
     let user = useSelector(state => state.user.user[0]);
 
     async function addNewRoom(e) {
@@ -18,19 +20,19 @@ function ChatterRoom() {
             name: roomname
         }
         await set(ref(database, 'rooms/' + roomname), room);
+        dispatch(addRoom(room));
     }
 
     useEffect(() => {
         const roomsRef = ref(database, 'rooms/');
         onValue(roomsRef, (snapshot) => {
             const data = snapshot.val();
-            let copy = rooms;
             for (let property in data) {
-                copy.push(data[property]);
+                dispatch(addRoom(data[property]));
+                //console.log(data[property])
             }
-            addRooms(copy);
         });
-    }, [rooms])
+    }, [])
 
     return (
         <div className="chatterroom">
